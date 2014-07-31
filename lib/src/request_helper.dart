@@ -1,10 +1,9 @@
 library restful.request_helper;
 
-import 'dart:async';
 import 'dart:html';
 import 'package:logging/logging.dart';
 import 'package:restful/src/formats.dart';
-import 'package:restful/src/request_fault.dart';
+import 'package:restful/src/response_decorator.dart';
 
 typedef HttpRequest RequestFactory();
 
@@ -27,9 +26,8 @@ class RequestHelper {
 
   RequestHelper.delete(this.url, this.format) : method = 'delete';
 
-  Future<HttpRequest> send([Object data]) {
-    var completer = new Completer();
-
+  RequestDecorator send([Object data]) {
+    RequestDecorator requestDecorator = null;
     var request = httpRequestFactory();
     var serializedData = data != null ? format.serialize(data) : null;
     request.open(method, url);
@@ -39,24 +37,19 @@ class RequestHelper {
     }
     request.setRequestHeader('Accept', format.contentType);
     request.onLoad.listen((event) {
-      if ((request.status >= 200 && request.status < 300) || request.status == 0) {
-        completer.complete(request);
-      } else {
-        _logger.warning("Unhandled HTTP status code ${request.status} for $url");
-        completer.completeError(new RequestFault(method, url, serializedData, request));
-      }
+      requestDecorator = new RequestDecorator(method, url, serializedData, request);
     });
-    request.onError.listen((event) => completer.completeError(new RequestFault(method, url, serializedData, request)));
-
+    request.onError.listen((event) {
+      requestDecorator = new RequestDecorator(method, url, serializedData, request);
+    });
+    
     if (serializedData != null) {
       request.send(serializedData);
     } else {
       request.send();
     }
-
-    return completer.future;
+    return requestDecorator;
   }
-
 }
 
 Logger _logger = new Logger("restful.request_helper");
