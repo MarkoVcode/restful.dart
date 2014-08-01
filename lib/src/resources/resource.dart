@@ -1,6 +1,5 @@
 library restful.resource_abstract;
 
-import 'dart:html';
 import 'dart:async';
 import 'package:restful/src/request_helper.dart';
 import 'package:restful/src/formats.dart';
@@ -19,11 +18,11 @@ abstract class Resource {
     
   Future<RestRequest> request(String method, String url, [Object data]) {
     RequestHelper request = new RequestHelper(method, url, format);
-    return request.send(data);
+    return (data != null ? request.send(data) : request.send()).then(_deserialize);
   }
   
-  Object _deserialize(HttpRequest request) {
-    return format.deserialize(request.responseText);
+  void _deserialize(RestRequest rrequest) {
+    rrequest.setDataObject(format.deserialize(rrequest.request.responseText));
   }
   
   Future<RestRequest> save([Map<String, Object> params]) {
