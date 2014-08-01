@@ -1,4 +1,4 @@
-library restful.formats;
+library restfulplus.formats;
 
 import 'dart:convert';
 

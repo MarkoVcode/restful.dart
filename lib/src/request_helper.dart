@@ -1,16 +1,15 @@
-library restful.request_helper;
+library restfulplus.request_helper;
 
 import 'dart:async';
 import 'dart:html';
 import 'package:logging/logging.dart';
-import 'package:restful/src/formats.dart';
-import 'package:restful/src/response_decorator.dart';
+import 'package:restfulplus/src/formats.dart';
+import 'package:restfulplus/src/response_decorator.dart';
 
 typedef HttpRequest RequestFactory();
 
 /// Allows for mocking an HTTP request for testing.
 RequestFactory httpRequestFactory = () => new HttpRequest();
-
 
 class RequestHelper {
 
@@ -42,7 +41,7 @@ class RequestHelper {
     });
     request.onError.listen((event) {
       _logger.warning("Unhandled error");
-      completer.complete(new RestRequest(method, url, serializedData, request));
+      completer.complete(new RestRequest(method, url, serializedData, request, true));
     });
 
     if (serializedData != null) {

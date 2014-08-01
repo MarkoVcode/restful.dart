@@ -1,4 +1,4 @@
-library restful.uri_helper;
+library restfulplus.uri_helper;
 
 class UriHelper extends Uri {
   

@@ -1,10 +1,9 @@
-library restful.tests.request;
+library restfulplus.tests.request;
 
-import 'dart:async';
 import 'package:unittest/unittest.dart';
-import 'package:unittest/mock.dart';
-import 'package:restful/src/request_helper.dart';
-import 'package:restful/src/formats.dart';
+import 'package:restfulplus/src/request_helper.dart';
+import 'package:restfulplus/src/formats.dart';
+import 'package:mock/mock.dart';
 import 'request_mock.dart';
 
 void testRequests() {
@@ -18,19 +17,19 @@ void testRequests() {
 
     test("should set header's Content-Type on POST requests", () {
       var request = new RequestHelper.post('url', JSON_FORMAT);
-      request.send().then(expectAsync1((json) {
+      request.send().then(expectAsync((json) {
         httpRequest.getLogs(callsTo('setRequestHeader', 'Content-Type', JSON_FORMAT.contentType)).verify(happenedOnce);
       }));
     });
 
     test("should set header's Content-Type on PUT requests", () {
-      new RequestHelper.put('url', JSON_FORMAT).send().then(expectAsync1((json) {
+      new RequestHelper.put('url', JSON_FORMAT).send().then(expectAsync((json) {
         httpRequest.getLogs(callsTo('setRequestHeader', 'Content-Type', JSON_FORMAT.contentType)).verify(happenedOnce);
       }));
     });
 
     test("should not set header's Content-Type on GET requests", () {
-      new RequestHelper.get('url', JSON_FORMAT).send().then(expectAsync1((json) {
+      new RequestHelper.get('url', JSON_FORMAT).send().then(expectAsync((json) {
         httpRequest.getLogs(callsTo('setRequestHeader', 'Content-Type', JSON_FORMAT.contentType)).verify(neverHappened);
       }));
     });

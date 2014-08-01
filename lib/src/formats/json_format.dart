@@ -1,4 +1,4 @@
-part of restful.formats;
+part of restfulplus.formats;
 
 class JsonFormat extends Format {
 
