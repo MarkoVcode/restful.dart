@@ -55,7 +55,7 @@ class CachedResource extends Resource {
   bool hasCache(String name) {
     if(cache.containsKey(name)) {
       RestRequest rd = cache.remove(name);
-      if((rd.cacheTimestamp + autoCacheInvalidate) > new DateTime.now().millisecondsSinceEpoch) {
+      if((rd.getCacheTimestamp() + autoCacheInvalidate) > new DateTime.now().millisecondsSinceEpoch) {
         cache.putIfAbsent(name, () => rd);
         return true;
       }
@@ -70,7 +70,7 @@ class CachedResource extends Resource {
   }
   
   void setCache(String name, RestRequest req) {
-    req.cacheTimestamp = new DateTime.now().millisecondsSinceEpoch;
+    req.setCacheTimestamp(new DateTime.now().millisecondsSinceEpoch);
     cache.putIfAbsent(name, () => req);
   }
   

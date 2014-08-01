@@ -18,4 +18,12 @@ class RestRequest {
   void setDataObject(Object obj) {
     unserialized = obj;
   }
+  
+  void setCacheTimestamp(int ts) {
+    cacheTimestamp = ts;
+  }
+  
+  int getCacheTimestamp() {
+    return cacheTimestamp;
+  }
 }
