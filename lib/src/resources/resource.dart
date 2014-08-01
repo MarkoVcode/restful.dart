@@ -1,6 +1,7 @@
 library restful.resource_abstract;
 
 import 'dart:html';
+import 'dart:async';
 import 'package:restful/src/request_helper.dart';
 import 'package:restful/src/formats.dart';
 import 'package:restful/src/uri_helper.dart';
@@ -16,7 +17,7 @@ abstract class Resource {
     uri = new UriHelper.from(url);
   }
     
-  RequestDecorator request(String method, String url, [Object data]) {
+  Future<RestRequest> request(String method, String url, [Object data]) {
     RequestHelper request = new RequestHelper(method, url, format);
     return request.send(data);
   }
@@ -25,21 +26,21 @@ abstract class Resource {
     return format.deserialize(request.responseText);
   }
   
-  RequestDecorator save([Map<String, Object> params]) {
+  Future<RestRequest> save([Map<String, Object> params]) {
     params = params != null ? params : {};
     return request('post', url, params);
   }
   
-  RequestDecorator clear() {
+  Future<RestRequest> clear() {
     return request('delete', url);
   }
   
-  RequestDecorator delete(Object id) {
+  Future<RestRequest> delete(Object id) {
     var uri = this.uri.append(id.toString()).toString();
     return request('delete', uri);
   }
   
-  RequestDecorator create(Object id, Map<String, Object> params) {
+  Future<RestRequest> create(Object id, Map<String, Object> params) {
     var uri = this.uri.append(id).toString();
     return request('put', uri, params);
   }

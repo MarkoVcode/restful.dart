@@ -1,5 +1,6 @@
 library restful.resource_non_cached;
 
+import 'dart:async';
 import 'package:restful/src/formats.dart';
 import 'package:restful/src/response_decorator.dart';
 import 'package:restful/src/resources/resource.dart';
@@ -13,16 +14,16 @@ class NonCachedResource extends Resource {
     return new NonCachedResource(uri, this.format);
   }
    
-  RequestDecorator find(Object id) {
+  Future<RestRequest> find(Object id) {
     var uri = this.uri.append(id.toString()).toString();
     return request('get', uri);
   }
   
-  RequestDecorator findAll() {
+  Future<RestRequest> findAll() {
     return request('get', url);
   }
   
-  RequestDecorator query(Map<String, Object> params) {
+  Future<RestRequest> query(Map<String, Object> params) {
     var uri = this.uri.replaceParams(params).toString();
     return request('get', uri);
   }

@@ -1,5 +1,6 @@
 library restful.request_helper;
 
+import 'dart:async';
 import 'dart:html';
 import 'package:logging/logging.dart';
 import 'package:restful/src/formats.dart';
@@ -9,6 +10,7 @@ typedef HttpRequest RequestFactory();
 
 /// Allows for mocking an HTTP request for testing.
 RequestFactory httpRequestFactory = () => new HttpRequest();
+
 
 class RequestHelper {
 
@@ -26,29 +28,32 @@ class RequestHelper {
 
   RequestHelper.delete(this.url, this.format) : method = 'delete';
 
-  RequestDecorator send([Object data]) {
-    RequestDecorator requestDecorator = null;
+  Future<RestRequest> send([Object data]) {
+    var completer = new Completer();
+    RestRequest requestDecorator = null;
     var request = httpRequestFactory();
     var serializedData = data != null ? format.serialize(data) : null;
     request.open(method, url);
-
     if (method != 'get') {
       request.setRequestHeader('Content-Type', format.contentType);
     }
     request.setRequestHeader('Accept', format.contentType);
     request.onLoad.listen((event) {
-      requestDecorator = new RequestDecorator(method, url, serializedData, request);
+      requestDecorator = new RestRequest(method, url, serializedData, request);
+      completer.complete(requestDecorator);
     });
     request.onError.listen((event) {
-      requestDecorator = new RequestDecorator(method, url, serializedData, request);
+      _logger.warning("Unhandled error");
+      requestDecorator = new RestRequest(method, url, serializedData, request);
+      completer.complete(requestDecorator);
     });
-    
+
     if (serializedData != null) {
       request.send(serializedData);
     } else {
       request.send();
     }
-    return requestDecorator;
+    return completer.future;
   }
 }
 

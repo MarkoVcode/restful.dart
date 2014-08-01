@@ -11,7 +11,7 @@ class RestApi {
   final Format format;
   final bool cached;
   
-  RestApi({this.apiUri, this.format, this.cached});
+  RestApi(this.apiUri, this.format, this.cached);
   
   Resource resource(String name) {
     var uri = new UriHelper.from(apiUri).appendEach(name.split("/")).toString();
