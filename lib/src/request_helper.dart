@@ -30,7 +30,6 @@ class RequestHelper {
 
   Future<RestRequest> send([Object data]) {
     var completer = new Completer();
-    RestRequest requestDecorator = null;
     var request = httpRequestFactory();
     var serializedData = data != null ? format.serialize(data) : null;
     request.open(method, url);
@@ -39,13 +38,11 @@ class RequestHelper {
     }
     request.setRequestHeader('Accept', format.contentType);
     request.onLoad.listen((event) {
-      requestDecorator = new RestRequest(method, url, serializedData, request);
-      completer.complete(requestDecorator);
+      completer.complete(new RestRequest(method, url, serializedData, request));
     });
     request.onError.listen((event) {
       _logger.warning("Unhandled error");
-      requestDecorator = new RestRequest(method, url, serializedData, request);
-      completer.complete(requestDecorator);
+      completer.complete(new RestRequest(method, url, serializedData, request));
     });
 
     if (serializedData != null) {
