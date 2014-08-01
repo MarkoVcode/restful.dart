@@ -21,8 +21,9 @@ abstract class Resource {
     return (data != null ? request.send(data) : request.send()).then(_deserialize);
   }
   
-  void _deserialize(RestRequest rrequest) {
+  RestRequest _deserialize(RestRequest rrequest) {
     rrequest.setDataObject(format.deserialize(rrequest.request.responseText));
+    return rrequest;
   }
   
   Future<RestRequest> save([Map<String, Object> params]) {

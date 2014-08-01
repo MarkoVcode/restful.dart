@@ -28,7 +28,7 @@ class CachedResource extends Resource {
     if(hasCache(uri) && !invalidate) {
       return getCache(uri);
     }
-    return request('get', uri);
+    return request('get', uri).then((rd) => setCache(uri, rd));
   }
   
   Future<RestRequest> findAll([bool invalidate = false]) {
@@ -67,9 +67,10 @@ class CachedResource extends Resource {
     return new Future.value(rd);
   }
   
-  void setCache(String name, RestRequest req) {
+  RestRequest setCache(String name, RestRequest req) {
     req.setCacheTimestamp(new DateTime.now().millisecondsSinceEpoch);
     cache.putIfAbsent(name, () => req);
+    return req;
   }
   
 }
