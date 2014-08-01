@@ -35,9 +35,7 @@ class CachedResource extends Resource {
     if(hasCache(url) && !invalidate) {
       return getCache(url);
     } else {
-      Future<RestRequest> futureRequest = request('get', url);
-      futureRequest.then((rd) => setCache(url, rd));
-      return futureRequest;
+      return request('get', url).then((rd) => setCache(url, rd));
     }
   }
   
