@@ -1,7 +1,7 @@
 library restful.rest_api;
 
 import 'package:restful/src/formats.dart';
-import 'package:restful/src/resources/cached.dart';
+import 'package:restful/src/resources/ramcached.dart';
 import 'package:restful/src/resources/noncached.dart';
 import 'package:restful/src/uri_helper.dart';
 
@@ -11,9 +11,9 @@ class RestApi {
   
   RestApi(this.apiUri, this.format);
   
-  CachedResource cachedResource(String name) {
+  RamCachedResource cachedResource(String name, [int autoInvalidateTimeout= 60000]) {
     var uri = new UriHelper.from(apiUri).appendEach(name.split("/")).toString();
-    return new CachedResource(uri, format);
+    return new RamCachedResource(uri, format, autoInvalidateTimeout);
   }
   
   NonCachedResource nonCachedResource(String name) {

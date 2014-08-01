@@ -1,26 +1,28 @@
-library restful.resource_cached;
+library restful.resource_ram_cached;
 
 import 'dart:async';
 import 'package:restful/src/formats.dart';
 import 'package:restful/src/response_decorator.dart';
 import 'package:restful/src/resources/resource.dart';
 
-class CachedResource extends Resource {
+class RamCachedResource extends Resource {
   
   Map<String, RestRequest> cache = new Map<String, RestRequest>();
   
   //m seconds
-  int autoCacheInvalidate = 60000;
+  int autoCacheInvalidate;
   
   void setAutoCacheInvalidate(int autoCacheInvalidate_ms) {
     autoCacheInvalidate = autoCacheInvalidate_ms;
   }
   
-  CachedResource(String uri, Format format) : super(uri, format);
+  RamCachedResource(String uri, Format format, int timeout) : super(uri, format) {
+    autoCacheInvalidate = timeout;
+  }
 
   Resource nest(Object id, String resource) {
     var uri = this.uri.appendEach([id, resource]).toString();
-    return new CachedResource(uri, this.format);
+    return new RamCachedResource(uri, this.format, this.autoCacheInvalidate);
   }
    
   Future<RestRequest> find(Object id, [bool invalidate = false]) {
