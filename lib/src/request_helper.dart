@@ -53,4 +53,4 @@ class RequestHelper {
   }
 }
 
-Logger _logger = new Logger("restful.request_helper");
+Logger _logger = new Logger("restfulplus.request_helper");

@@ -66,8 +66,10 @@ class RamCachedResource extends Resource {
   }
 
   RestRequest setCache(String name, RestRequest req) {
-    req.setCacheTimestamp(new DateTime.now().millisecondsSinceEpoch);
-    cache.putIfAbsent(name, () => req);
+    if(!req.hasError()) {
+      req.setCacheTimestamp(new DateTime.now().millisecondsSinceEpoch);
+      cache.putIfAbsent(name, () => req);
+    }
     return req;
   }
 
