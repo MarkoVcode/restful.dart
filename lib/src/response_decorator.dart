@@ -12,7 +12,7 @@ class RestRequest {
   final bool error;
 
   RestRequest(this.method, this.url, this.data, this.request, [bool this.error = false]);
-
+ 
   Object getData() {
     return unserialized;
   }

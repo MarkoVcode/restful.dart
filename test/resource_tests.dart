@@ -28,26 +28,23 @@ void testResource() {
 
     group("clear", () {
       test("should send 'DELETE' to correct URL", () {
-        resource.clear().then(expectAsync((json) {
+        resource.clear().then(expectAsync((responseDecorator) {
           request.getLogs(callsTo('open', 'delete', 'http://www.example.com/users')).verify(happenedOnce);
         }));
       });
 
       test("should deserialize response", () {
-        var response = true;
-        request.responseText = JSON.encode(response);
-
-        resource.clear().then(expectAsync((json) {
-          expect(json, equals(response));
+        resource.clear().then(expectAsync((restRequest) {
+          expect(restRequest.hasError(), equals(false));
         }));
       });
     });
 
-    group("create", () {
+    group("save", () {
       test("should send 'POST' to correct URL", () {
-        resource.create({
+        resource.save({
           'name': 'Jimmy Page'
-        }).then(expectAsync((json) {
+        }).then(expectAsync((responseDecorator) {
           request.getLogs(callsTo('open', 'post', 'http://www.example.com/users')).verify(happenedOnce);
         }));
       });
@@ -56,7 +53,7 @@ void testResource() {
         var data = {
           'name': 'Jimmy Page'
         };
-        resource.create(data).then(expectAsync((json) {
+        resource.save(data).then(expectAsync((responseDecorator) {
           request.getLogs(callsTo('send', resource.format.serialize(data))).verify(happenedOnce);
         }));
       });
@@ -68,15 +65,15 @@ void testResource() {
         };
         request.responseText = JSON.encode(response);
 
-        resource.create(new Map.from(response)..remove('id')).then(expectAsync((json) {
-          expect(json, equals(response));
+        resource.save(new Map.from(response)..remove('id')).then(expectAsync((responseDecorator) {
+          expect(responseDecorator.getData(), equals(response));
         }));
       });
     });
 
     group("delete", () {
       test("should send 'DELETE' to correct URL", () {
-        resource.delete(1).then(expectAsync((json) {
+        resource.delete(1).then(expectAsync((responseDecorator) {
           request.getLogs(callsTo('open', 'delete', 'http://www.example.com/users/1')).verify(happenedOnce);
         }));
       });
@@ -87,15 +84,15 @@ void testResource() {
         };
         request.responseText = JSON.encode(response);
 
-        resource.delete(1).then(expectAsync((json) {
-          expect(json, equals(response));
+        resource.delete(1).then(expectAsync((responseDecorator) {
+          expect(responseDecorator.getData(), equals(response));
         }));
       });
-    });   
-    
+    });
+
     group("find", () {
       test("should send 'GET' to correct URL", () {
-        resource.find(1).then(expectAsync((json) {
+        resource.find(1).then(expectAsync((responseDecorator) {
           request.getLogs(callsTo('open', 'get', 'http://www.example.com/users/1')).verify(happenedOnce);
         }));
       });
@@ -107,94 +104,94 @@ void testResource() {
         };
         request.responseText = JSON.encode(response);
 
-        resource.find(1).then(expectAsync((json) {
-          expect(json, equals(response));
+        resource.find(1).then(expectAsync((responseDecorator) {
+          expect(responseDecorator.getData(), equals(response));
         }));
       });
     });
 
     group("findAll", () {
-       test("should send 'GET' to correct URL", () {
-         resource.findAll().then(expectAsync((json) {
-           request.getLogs(callsTo('open', 'get', 'http://www.example.com/users')).verify(happenedOnce);
-         }));
-       });
+      test("should send 'GET' to correct URL", () {
+        resource.findAll().then(expectAsync((responseDecorator) {
+          request.getLogs(callsTo('open', 'get', 'http://www.example.com/users')).verify(happenedOnce);
+        }));
+      });
 
-       test("should deserialize response", () {
-         var response = [{
-             'id': 1,
-             'name': 'Jimmy Page'
-           }, {
-             'id': 2,
-             'name': 'David Gilmour'
-           }];
-         request.responseText = JSON.encode(response);
+      test("should deserialize response", () {
+        var response = [{
+            'id': 1,
+            'name': 'Jimmy Page'
+          }, {
+            'id': 2,
+            'name': 'David Gilmour'
+          }];
+        request.responseText = JSON.encode(response);
 
-         resource.find(1).then(expectAsync((json) {
-           expect(json, equals(response));
-         }));
-       });
-     });
+        resource.find(1).then(expectAsync((responseDecorator) {
+          expect(responseDecorator.getData(), equals(response));
+        }));
+      });
+    });
 
-     group("query", () {
-       test("should send 'GET' to correct URL", () {
-         resource.query({
-           'param1': 'value1'
-         }).then(expectAsync((json) {
-           request.getLogs(callsTo('open', 'get', 'http://www.example.com/users?param1=value1')).verify(happenedOnce);
-         }));
-       });
+    group("query", () {
+      test("should send 'GET' to correct URL", () {
+        resource.query({
+          'param1': 'value1'
+        }).then(expectAsync((responseDecorator) {
+          request.getLogs(callsTo('open', 'get', 'http://www.example.com/users?param1=value1')).verify(happenedOnce);
+        }));
+      });
 
-       test("should deserialize response", () {
-         var response = [{
-             'id': 1,
-             'name': 'Jimmy Page'
-           }, {
-             'id': 2,
-             'name': 'David Gilmour'
-           }];
-         request.responseText = JSON.encode(response);
+      test("should deserialize response", () {
+        var response = [{
+            'id': 1,
+            'name': 'Jimmy Page'
+          }, {
+            'id': 2,
+            'name': 'David Gilmour'
+          }];
+        request.responseText = JSON.encode(response);
 
-         resource.query({
-           'param1': 'value1'
-         }).then(expectAsync((json) {
-           expect(json, equals(response));
-         }));
-       });
-     });
+        resource.query({
+          'param1': 'value1'
+        }).then(expectAsync((responseDecorator) {
+          expect(responseDecorator.getData(), equals(response));
+        }));
+      });
+    });
 
-     group("save", () {
-       test("should send 'PUT' to correct URL", () {
-         resource.save(1, {
-           'name': 'David Gilmour'
-         }).then(expectAsync((json) {
-           request.getLogs(callsTo('open', 'put', 'http://www.example.com/users/1')).verify(happenedOnce);
-         }));
-       });
+    group("create", () {
+      test("should send 'PUT' to correct URL", () {
+        resource.create(1, {
+          'name': 'David Gilmour'
+        }).then(expectAsync((responseDecorator) {
+          request.getLogs(callsTo('open', 'put', 'http://www.example.com/users/1')).verify(happenedOnce);
+        }));
+      });
 
-       test("should serialize request data", () {
-         var data = {
-           'name': 'David Gilmour'
-         };
-         resource.save(1, data).then(expectAsync((json) {
-           request.getLogs(callsTo('send', resource.format.serialize(data))).verify(happenedOnce);
-         }));
-       });
+      test("should serialize request data", () {
+        var data = {
+          'name': 'David Gilmour'
+        };
+        resource.create(1, data).then(expectAsync((responseDecorator) {
+          request.getLogs(callsTo('send', resource.format.serialize(data))).verify(happenedOnce);
+        }));
+      });
 
-       test("should deserialize response", () {
-         var response = {
-           'id': 1,
-           'name': 'Jimmy Page'
-         };
-         request.responseText = JSON.encode(response);
+      test("should deserialize response", () {
+        var response = {
+          'id': 1,
+          'name': 'Jimmy Page'
+        };
+        request.responseText = JSON.encode(response);
 
-         resource.save(1, {
-           'param1': 'value1'
-         }).then(expectAsync((json) {
-           expect(json, equals(response));
-         }));
-       });
-     });
-    
+        resource.create(1, {
+          'param1': 'value1'
+        }).then(expectAsync((responseDecorator) {
+          expect(responseDecorator.getData(), equals(response));
+        }));
+      });
+    });
+
   });
 }

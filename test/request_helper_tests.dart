@@ -39,8 +39,10 @@ void testRequests() {
         httpRequest.status = 500;
       });
 
-      test("should fail with completeError", () {
-        expect(new RequestHelper.get('url', JSON_FORMAT).send(), throws);
+      test("should't fail", () {
+        new RequestHelper.get('url', JSON_FORMAT).send().then(expectAsync((responseDecorator) {
+          expect(responseDecorator.request.status, equals(500));
+        }));
       });
     });
   });
