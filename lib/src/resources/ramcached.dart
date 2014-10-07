@@ -22,7 +22,8 @@ class RamCachedResource extends Resource {
   }
 
   Future<RestRequest> find(Object id, [bool invalidate = false]) {
-    var uri = this.uri.append(id.toString()).toString();
+    var path = ouri.pathSegments.toList()..add(id.toString());
+    var uri = ouri.replace(pathSegments: path, port: ouri.port).toString();
     if (hasCache(uri) && !invalidate) {
       return getCache(uri);
     }

@@ -10,12 +10,16 @@ class NonCachedResource extends Resource {
   NonCachedResource(String uri, Format format) : super(uri, format);
 
   Resource nest(Object id, String resource) {
-    var uri = this.uri.appendEach([id, resource]).toString();
+    //var uri = this.uri.appendEach([id, resource]).toString();
+    var path = ouri.pathSegments.toList()..add(id.toString());
+    var uri = ouri.replace(pathSegments: path, port: ouri.port).toString();
     return new NonCachedResource(uri, this.format);
   }
 
   Future<RestRequest> find(Object id) {
-    var uri = this.uri.append(id.toString()).toString();
+    //var uri = this.uri.append(id.toString()).toString();
+    var path = ouri.pathSegments.toList()..add(id.toString());
+    var uri = ouri.replace(pathSegments: path, port: ouri.port).toString();
     return request('get', uri);
   }
 
@@ -24,7 +28,9 @@ class NonCachedResource extends Resource {
   }
 
   Future<RestRequest> query(Map<String, Object> params) {
-    var uri = this.uri.replaceParams(params).toString();
+    //var uri = this.uri.replaceParams(params).toString();
+    var path = ouri.pathSegments.toList()..add(id.toString());
+    var uri = ouri.replace(pathSegments: path, port: ouri.port).toString();
     return request('get', uri);
   }
 
